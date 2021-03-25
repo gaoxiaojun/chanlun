@@ -1,3 +1,4 @@
 Advisors/
 Examples/
 *.ex5
+.DS_Store

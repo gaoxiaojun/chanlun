@@ -6,15 +6,15 @@
 #property copyright "Copyright 2021, Xiaojun Gao"
 #property link      "https://www.forex24.today"
 #property version   "1.00"
-
-
 #property strict
+
+#include "zencore.mqh"
 
 //################
 // Input Variables
 //################
 
-input string                         TradeSymbols           = "EURUSD";       //Symbol(s)
+input string TradeSymbols = "EURUSD";       //Symbol(s)
 
 
 //################
@@ -34,14 +34,7 @@ string   SymbolsProcessedThisIteration;
 
 int      iBarToUseForProcessing;                      //This will either be bar 0 or bar 1, and depends on the BarProcessingMethod - Set in OnInit()
 
-struct Bar
-  {
-   datetime          time;
-   double            open;
-   double            high;
-   double            low;
-   double            close;
-  };
+
 
 //+------------------------------------------------------------------+
 //|                                                                  |
@@ -116,19 +109,22 @@ void OnTick()
      }
   }
 
+Bar buildM1Bar(string symbol) {
+   Bar bar;
+   bar.time = iTime(symbol, PERIOD_M1,1);
+   bar.high = iHigh(symbol,PERIOD_M1,1);
+   bar.open = iOpen(symbol, PERIOD_M1,1);
+   bar.close = iClose(symbol, PERIOD_M1,1);
+   bar.low = iLow(symbol, PERIOD_M1,1);
+   return bar;
+}
 //+------------------------------------------------------------------+
 //|                                                                  |
 //+------------------------------------------------------------------+
 void ProcessM1Bar(int SymbolLoop)
   {
    string CurrentSymbol = SymbolArray[SymbolLoop];
-   Bar bar;
-   bar.time = iTime(CurrentSymbol, PERIOD_M1,1);
-   bar.high = iHigh(CurrentSymbol,PERIOD_M1,1);
-   bar.open = iOpen(CurrentSymbol, PERIOD_M1,1);
-   bar.close = iClose(CurrentSymbol, PERIOD_M1,1);
-   bar.low = iLow(CurrentSymbol, PERIOD_M1,1);
-
+   Bar bar = buildM1Bar(CurrentSymbol);
 
    string OutputText = "\n\r\n\r";
    OutputText += "ProcessClose " + CurrentSymbol + " open:" +DoubleToString(bar.open) + " high:" + DoubleToString(bar.high) +" low:" +DoubleToString(bar.low) + " close:" + DoubleToString(bar.close) +"\n\r";
